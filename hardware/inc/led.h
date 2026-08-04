@@ -6,18 +6,18 @@
 #ifndef LED_H
 #define LED_H
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* 宏定义：给 LED 使用的端口和引脚起名字 */
-#define LED_GPIO_PORT GPIOA
-#define LED1_PIN      GPIO_PIN_4
-#define LED2_PIN      GPIO_PIN_5
-#define LED3_PIN      GPIO_PIN_6
-#define LED4_PIN      GPIO_PIN_7
+#define LED_GPIO_PORT GPIOB
+#define LED1_PIN      GPIO_PIN_3
+#define LED2_PIN      GPIO_PIN_4
+#define LED3_PIN      GPIO_PIN_5
+#define LED4_PIN      GPIO_PIN_6
 
 /* 种子工程先提供无参数版本，只操作 LED1；题目 1 将其扩展为带编号参数版本 */
 void led_on(void);

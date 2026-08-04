@@ -5,7 +5,7 @@
 #ifndef LED_FLOW_H
 #define LED_FLOW_H
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 
 #define LED_FLOW_STEP_COUNT 4U
 

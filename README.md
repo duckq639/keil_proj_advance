@@ -2,7 +2,6 @@
 
 > 本文件是 C 语言进阶培训第一天的课程 README，工程基于当前工作区 `keil_proj_advance`。
 > 前置：已完成 8.6 Git/Markdown、8.7 编译烧录、8.8 基础 C 工程操作。
-> 硬件范围：只使用板载已配置外设，即 PA4~PA7 四颗 LED、PA8 蜂鸣器、TIM3；
 > 作业单独放在 [doc/作业.md](doc/作业.md)，**本 README 只负责知识讲解**。
 
 ## 本课程教学重点
@@ -17,12 +16,11 @@
 
 | 外设 | 引脚 | 说明 |
 | --- | --- | --- |
-| LED1 | PA4 | 高电平点亮 |
-| LED2 | PA5 | 高电平点亮 |
-| LED3 | PA6 | 高电平点亮 |
-| LED4 | PA7 | 高电平点亮 |
-| 蜂鸣器 | PA8 | 高电平响 |
-| TIM3 | 内部定时器 | 用于较为精确的定时执行 |
+| LED1 | PB3 | 高电平点亮 |
+| LED2 | PB4 | 高电平点亮 |
+| LED3 | PB5 | 高电平点亮 |
+| LED4 | PB6 | 高电平点亮 |
+| 蜂鸣器 | PB0 | 高电平响 |
 
 ## 工程目录结构
 
@@ -51,7 +49,6 @@ keil_proj_advance/
   -> HAL_Init
   -> SystemClock_Config
   -> MX_GPIO_Init
-  -> MX_TIM3_Init
   -> led_demo_init
   -> while (1)
       -> led_demo_update
@@ -96,12 +93,12 @@ static uint16_t beep_count = 0U;
 
 static void buzzer_on(void)
 {
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
 }
 
 static void buzzer_off(void)
 {
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
 }
 
 void alarm_count_request(uint16_t count)
@@ -130,7 +127,7 @@ void alarm_count_request(uint16_t count);
 void alarm_func(void);
 ```
 
-封装的思想是：**调用方只依赖稳定接口，不依赖内部细节。** 调用方只需要知道 `alarm_count_request(3U)` 表示“请求响 3 次”，`alarm_func()` 表示“执行报警”；不需要知道蜂鸣器接在 PA8、响多久、次数存在哪个变量。以后要改引脚、改延时，或者把阻塞循环改成状态机，只需要改 `buzzer_alarm.c`，调用方不用动。**工程中的原则：模块只通过 `.h` 暴露公共 API，内部符号尽量用 `static` 藏起来。**
+封装的思想是：**调用方只依赖稳定接口，不依赖内部细节。** 调用方只需要知道 `alarm_count_request(3U)` 表示“请求响 3 次”，`alarm_func()` 表示“执行报警”；不需要知道蜂鸣器接在 PB0、响多久、次数存在哪个变量。以后要改引脚、改延时，或者把阻塞循环改成状态机，只需要改 `buzzer_alarm.c`，调用方不用动。**工程中的原则：模块只通过 `.h` 暴露公共 API，内部符号尽量用 `static` 藏起来。**
 
 `extern` 用于声明一个定义在其他 `.c` 文件中的变量或函数。函数声明默认就有 `extern` 含义，所以头文件里通常不写；变量跨文件使用时才显式写：
 
@@ -193,7 +190,7 @@ uint32_t size_type = sizeof(uint16_t);    /* sizeof(类型) */
 uint32_t size_int  = sizeof(int);         /* sizeof(内置类型) */
 ```
 
-以上三种写法都常见：变量写法在数组、结构体上更直观，类型写法适合不创建变量时使用。在 F405 上，`sizeof(uint16_t)` 通常为 2，`sizeof(int)` 通常为 4。`sizeof` 在编译期计算，不会在运行时产生额外开销；后面 `const` 表小节会用 `sizeof(数组) / sizeof(数组[0])` 自动得到元素个数。
+以上三种写法都常见：变量写法在数组、结构体上更直观，类型写法适合不创建变量时使用。在 H723 上，`sizeof(uint16_t)` 通常为 2，`sizeof(int)` 通常为 4。`sizeof` 在编译期计算，不会在运行时产生额外开销；后面 `const` 表小节会用 `sizeof(数组) / sizeof(数组[0])` 自动得到元素个数。
 
 #### 跳转语句：break、continue、return
 
@@ -241,8 +238,8 @@ void led_on(led_id id)
     }
 
     switch (led_id):
-    case LED_1 :HAL_GPIO_WritePin(GPIO_LED_PORT, GPIO_PIN_4, GPIO_PIN_SET); break;
-    case LED_2 :HAL_GPIO_WritePin(GPIO_LED_PORT, GPIO_PIN_5, GPIO_PIN_SET); break;
+    case LED_1 :HAL_GPIO_WritePin(GPIO_LED_PORT, GPIO_PIN_3, GPIO_PIN_SET); break;
+    case LED_2 :HAL_GPIO_WritePin(GPIO_LED_PORT, GPIO_PIN_4, GPIO_PIN_SET); break;
     ...
 }
 ```
@@ -367,10 +364,10 @@ static inline bool is_valid_led(led_id id)
 ```c
 static const led_config led_table[] =
 {
+    { GPIO_PIN_3, 250U, 250U },
     { GPIO_PIN_4, 250U, 250U },
     { GPIO_PIN_5, 250U, 250U },
-    { GPIO_PIN_6, 250U, 250U },
-    { GPIO_PIN_7, 250U, 250U }
+    { GPIO_PIN_6, 250U, 250U }
 };
 
 #define LED_TABLE_COUNT (sizeof(led_table) / sizeof(led_table[0]))
