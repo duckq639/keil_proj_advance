@@ -98,8 +98,6 @@ int main(void)
   HAL_Delay(100U);
   buzzer_off();
 
-  /* 题目3完成后，在这里调用封装好的流水灯初始化/运行函数 */
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -109,10 +107,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    led_on(LED1_PIN);
-    HAL_Delay(250U);
-    led_off(LED1_PIN);
-    HAL_Delay(250U);
+    led_water_flow();
   }
   /* USER CODE END 3 */
 }

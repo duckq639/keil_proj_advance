@@ -23,6 +23,8 @@ extern "C" {
 void led_on(uint8_t led_mark);
 void led_off(uint8_t led_mark);
 
+void led_water_flow();
+
 #ifdef __cplusplus
 }
 #endif

@@ -26,3 +26,22 @@ void led_off(uint8_t led_mark)
     }
     HAL_GPIO_WritePin(LED_GPIO_PORT, led_mark, GPIO_PIN_RESET);
 }
+
+void led_water_flow()
+{
+    led_on(LED1_PIN);
+    HAL_Delay(100U);
+    led_off(LED1_PIN);
+
+    led_on(LED2_PIN);
+    HAL_Delay(100U);
+    led_off(LED2_PIN);
+
+    led_on(LED3_PIN);
+    HAL_Delay(100U);
+    led_off(LED3_PIN);
+
+    led_on(LED4_PIN);
+    HAL_Delay(100U);
+    led_off(LED4_PIN);
+}
