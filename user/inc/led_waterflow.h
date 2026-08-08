@@ -16,7 +16,15 @@ extern "C"
         float on_duty;
     } LED_Blink;
 
-    void led_water_flow(void);
+    typedef enum {
+        IDLE = 0,
+        SINGLE_BLINK,
+        DOUBLE_BLINK,
+        ALL_BLINK,
+        LED_BLINK_MODE_COUNT,
+    } LED_Blink_Mode;
+
+    void LED_FSM(uint8_t signal);
 
 #ifdef __cplusplus
 }

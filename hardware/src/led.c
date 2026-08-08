@@ -26,3 +26,12 @@ void led_off(uint8_t led_mark)
     }
     HAL_GPIO_WritePin(LED_GPIO_PORT, led_mark, GPIO_PIN_RESET);
 }
+
+void led_toggle(uint8_t led_mark)
+{
+    if (!is_valid_ledmark(led_mark))
+    {
+        return; // 无效的 LED 标记，直接返回
+    }
+    HAL_GPIO_TogglePin(LED_GPIO_PORT, led_mark);
+}
