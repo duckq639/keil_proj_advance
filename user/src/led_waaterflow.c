@@ -1,5 +1,6 @@
 #include "led_waterflow.h"
 #include "stdbool.h"
+#include "buzzer.h"
 
 // 限幅
 static inline float clamp(float value, float min, float max)
@@ -54,6 +55,8 @@ void LED_FSM(uint8_t signal)
     static LED_Blink_Mode current_mode_;
     static LED_Blink_Mode target_mode_;
     static Timer blink_timer_;
+    static Timer buzzer_timer_;
+    static uint16_t buzzer_time_counter_ = 0U;
     static uint8_t led_mark = 0U;
     static bool is_entering_mode_ = true;
 
@@ -66,6 +69,7 @@ void LED_FSM(uint8_t signal)
     if (current_mode_ != target_mode_)
     {
         led_off(LED1_PIN | LED2_PIN | LED3_PIN | LED4_PIN);
+        buzzer_off();
         current_mode_ = target_mode_;
         is_entering_mode_ = true;
     }
@@ -74,7 +78,9 @@ void LED_FSM(uint8_t signal)
     {
     case IDLE:
         led_off(LED1_PIN | LED2_PIN | LED3_PIN | LED4_PIN);
+        buzzer_off();
         timer_stop(&blink_timer_);
+        timer_stop(&buzzer_timer_);
         break;
     case SINGLE_BLINK:
         if (is_entering_mode_)
@@ -100,6 +106,7 @@ void LED_FSM(uint8_t signal)
         if (is_entering_mode_)
         {
             timer_start(&blink_timer_, 200.0f);
+            timer_start(&buzzer_timer_, 100.0f);
             is_entering_mode_ = false;
             led_mark = LED1_PIN | LED2_PIN;
             led_on(led_mark);
@@ -114,11 +121,25 @@ void LED_FSM(uint8_t signal)
             }
             led_on(led_mark);
         }
+        if (is_timer_expired(&buzzer_timer_))
+        {
+            buzzer_time_counter_++;
+            if (buzzer_time_counter_ > 3U)
+            {
+                buzzer_on();
+                buzzer_time_counter_ = 0U;
+            }
+            else
+            {
+                buzzer_off();
+            }
+        }
         break;
     case ALL_BLINK:
         if (is_entering_mode_)
         {
             timer_start(&blink_timer_, 400.0f);
+            timer_start(&buzzer_timer_, 50.0f);
             is_entering_mode_ = false;
             led_mark = LED1_PIN | LED2_PIN | LED3_PIN | LED4_PIN;
             led_on(led_mark);
@@ -126,6 +147,19 @@ void LED_FSM(uint8_t signal)
         if (is_timer_expired(&blink_timer_))
         {
             led_toggle(led_mark);
+        }
+        if (is_timer_expired(&buzzer_timer_))
+        {
+            buzzer_time_counter_++;
+            if (buzzer_time_counter_ > 2U)
+            {
+                buzzer_on();
+                buzzer_time_counter_ = 0U;
+            }
+            else
+            {
+                buzzer_off();
+            }
         }
         break;
     case LED_BLINK_MODE_COUNT:
