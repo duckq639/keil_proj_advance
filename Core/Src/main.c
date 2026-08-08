@@ -109,9 +109,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    led_on();
+    led_on(LED1_PIN);
     HAL_Delay(250U);
-    led_off();
+    led_off(LED1_PIN);
     HAL_Delay(250U);
   }
   /* USER CODE END 3 */
