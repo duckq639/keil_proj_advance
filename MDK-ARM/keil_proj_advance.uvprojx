@@ -537,6 +537,16 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>user</GroupName>
+          <Files>
+            <File>
+              <FileName>led_waaterflow.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user\src\led_waaterflow.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
